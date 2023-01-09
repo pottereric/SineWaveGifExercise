@@ -5,6 +5,7 @@ import (
 	"image"
 	"image/color"
 	"image/gif"
+	"math"
 	"os"
 )
 
@@ -20,8 +21,17 @@ func generateBlackSquareImage(size int) *image.Paletted {
 func generateSineGif() gif.GIF {
 	var images []*image.Paletted
 	var delays []int
+	size := 1000
+	frequencyCoefficient := 16.0
+	amplitudeCoefficient := 50.0
 
-	image := generateBlackSquareImage(1000)
+	image := generateBlackSquareImage(size)
+	for x := 0; x < size; x++ {
+		sine := math.Sin(float64(x)/frequencyCoefficient) * amplitudeCoefficient
+		y := int(sine) + (size / 2)
+		image.SetColorIndex(x, y, 1)
+	}
+
 	images = append(images, image)
 	delays = append(delays, 0)
 
