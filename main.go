@@ -25,15 +25,18 @@ func generateSineGif() gif.GIF {
 	frequencyCoefficient := 16.0
 	amplitudeCoefficient := 50.0
 
-	image := generateBlackSquareImage(size)
-	for x := 0; x < size; x++ {
-		sine := math.Sin(float64(x)/frequencyCoefficient) * amplitudeCoefficient
-		y := int(sine) + (size / 2)
-		image.SetColorIndex(x, y, 1)
-	}
+	for i := 0; i < 34; i++ {
 
-	images = append(images, image)
-	delays = append(delays, 0)
+		image := generateBlackSquareImage(size)
+		for x := 0; x < size; x++ {
+			sine := math.Sin(float64(x+(i*3))/frequencyCoefficient) * amplitudeCoefficient
+			y := int(sine) + (size / 2)
+			image.SetColorIndex(x, y, 1)
+		}
+
+		images = append(images, image)
+		delays = append(delays, 0)
+	}
 
 	return gif.GIF{
 		Image: images,
