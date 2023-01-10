@@ -51,9 +51,17 @@ func saveGifToFile(image gif.GIF, fileName string) {
 	gif.EncodeAll(f, &image)
 }
 
+func getFileName() string {
+	fmt.Println("Type a word, then hit Enter.")
+	var word string
+	fmt.Scanf("%s", &word)
+	return word
+}
+
 func main() {
 	fmt.Println("Hello Sine Wave Exercise")
 
 	image := generateSineGif()
-	saveGifToFile(image, "sinWave.gif")
+	fileName := getFileName()
+	saveGifToFile(image, fileName)
 }
