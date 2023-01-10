@@ -6,6 +6,7 @@ import (
 	"image/color"
 	"image/gif"
 	"math"
+	"net/http"
 	"os"
 )
 
@@ -57,11 +58,19 @@ func getFileName() string {
 	fmt.Scanf("%s", &word)
 	return word
 }
-
-func main() {
-	fmt.Println("Hello Sine Wave Exercise")
+func handleRequest(responseWriter http.ResponseWriter, request *http.Request) {
+	responseWriter.WriteHeader(http.StatusOK)
+	responseWriter.Header().Set("Content-Type", "application/octet-stream")
 
 	image := generateSineGif()
-	fileName := getFileName()
-	saveGifToFile(image, fileName)
+	gif.EncodeAll(responseWriter, &image)
+	return
+}
+
+func main() {
+	http.HandleFunc("/", handleRequest)
+
+	port := ":3000"
+	fmt.Printf("[INFO] Listening on port %s \n", port)
+	http.ListenAndServe(port, nil)
 }
