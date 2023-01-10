@@ -18,7 +18,7 @@ func generateBlackSquareImage(size int) *image.Paletted {
 	return image.NewPaletted(image.Rect(0, 0, size, size), palette)
 }
 
-func generateSineGif() gif.GIF {
+func generateSineGif(imageCh chan gif.GIF) {
 	var images []*image.Paletted
 	var delays []int
 	size := 1000
@@ -35,7 +35,7 @@ func generateSineGif() gif.GIF {
 	images = append(images, image)
 	delays = append(delays, 0)
 
-	return gif.GIF{
+	imageCh <- gif.GIF{
 		Image: images,
 		Delay: delays,
 	}
@@ -65,13 +65,17 @@ func main() {
 	go getFileName(ch)
 	var fileName string
 
-	image := generateSineGif()
+	imageCh := make(chan gif.GIF)
+	go generateSineGif(imageCh)
+	var image gif.GIF
 
-	select {
-	case word := <-ch:
-		fileName = word
-		//case <-t:
-		//fmt.Println("Timeout.")
+	for i := 0; i < 2; i++ {
+		select {
+		case word := <-ch:
+			fileName = word
+		case img := <-imageCh:
+			image = img
+		}
 	}
 
 	saveGifToFile(image, fileName)
